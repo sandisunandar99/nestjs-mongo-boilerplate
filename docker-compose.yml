@@ -1,0 +1,56 @@
+version: "3"
+
+services:
+
+  mongo:
+    container_name: meraki-db-mongo
+    image: ${MONGO_IMAGE}
+    restart: always
+    ports:
+      - "27017:27017"
+    # environment:
+    #   MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+    #   MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    volumes:
+      - mongodb:/data/db
+      - mongodb_config:/dataconfigdb
+    networks:
+      - meraki-netrwork
+
+  app:
+    container_name: meraki-app
+    image: workfromcafe/meraki-app
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: ${NODE_ENV}
+      # args:
+      #   - NODE_ENV=${NODE_ENV}
+    env_file:
+      - .env
+    # environment:
+    #   - NODE_ENV=${NODE_ENV}
+    #   - SERVER_PORT=${SERVER_PORT}
+    #   - MONGODB_URL=${MONGO_DB_URL}
+    ports:
+      - 3000:${SERVER_PORT}
+      - 9229:9229
+    links:
+      - mongo
+    restart: always
+    volumes:
+      - .:/node/app:delegated
+      - /node/app/node_modules
+    # command: npm run start:dev
+    networks:
+      - meraki-netrwork
+
+volumes:
+  mongodb:
+  mongodb_config:
+
+networks:
+  meraki-netrwork:
+    driver: bridge
+    ipam:
+      driver: default
