@@ -56,15 +56,19 @@ export class CreateUserDto {
   })
   password: string;
 
-  @ApiProperty({
-    example: 'User123',
-    description: 'Confirmation of password user',
-  })
-  @IsString()
-  @MinLength(6)
-  @MaxLength(20)
-  @Matches('password')
-  password_confirm: string;
+/**
+ * TODO: confirm password was disables
+ */
+
+  // @ApiProperty({
+  //   example: 'User123',
+  //   description: 'Confirmation of password user',
+  // })
+  // @IsString()
+  // @MinLength(6)
+  // @MaxLength(20)
+  // @Matches('password')
+  // password_confirm: string;
 
   @ApiProperty({
     example: 'false',
